@@ -44,7 +44,7 @@ nestopay-ghost/
 | Francophone Africa focus | ✅ Core strategy | ❌ |
 | Pluggable operator APIs | ✅ New operator in 4–6h | ❌ |
 | Customer support SLA | ✅ <4hr target | ❌ (top complaint) |
-
+      
 ---
 
 ## 🚀 Quick Deploy to GitHub Pages (5 minutes)
