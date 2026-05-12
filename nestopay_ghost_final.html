@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nestopay — Ghost Edition</title>
+<meta name="description" content="Cross-border mobile money transfers for the global diaspora. Zero fees. 60s settlement.">
+<meta name="theme-color" content="#00E896">
+<meta property="og:title" content="Nestopay Ghost Edition">
+<meta property="og:description" content="Money that moves as fast as people. Zero fees to Senegal, Ghana, Côte d'Ivoire and more.">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --nest-green: #00E896;
+    --nest-green-dim: #00C47A;
+    --nest-navy: #0D1B2A;
+    --nest-navy2: #111F30;
+    --nest-navy3: #162840;
+    --nest-card: #172234;
+    --nest-card2: #1C2B3D;
+    --nest-border: rgba(0,232,150,0.12);
+    --nest-border2: rgba(255,255,255,0.07);
+    --text-1: #F0F4F8;
+    --text-2: #8BA3BC;
+    --text-3: #4E6A82;
+    --accent-gold: #F5A623;
+    --accent-red: #FF4D6A;
+    --accent-blue: #3DA9FC;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --r-md: 10px;
+    --r-lg: 16px;
+    --r-xl: 22px;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--nest-navy);
+    color: var(--text-1);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--nest-navy2);
+    border-right: 1px solid var(--nest-border2);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .logo-wrap {
+    padding: 0 20px 28px;
+    border-bottom: 1px solid var(--nest-border2);
+    margin-bottom: 16px;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-1);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--nest-green); }
+  .logo-tag {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--nest-green);
+    background: rgba(0,232,150,0.1);
+    border: 1px solid var(--nest-border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+  }
+  .nav-section {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+  .nav-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--r-md);
+    font-size: 13.5px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 400;
+    border: 1px solid transparent;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-1); }
+  .nav-item.active {
+    background: rgba(0,232,150,0.1);
+    color: var(--nest-green);
+    border-color: var(--nest-border);
+    font-weight: 500;
+  }
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    background: var(--nest-green);
+    color: var(--nest-navy);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+  .sidebar-bottom {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid var(--nest-border2);
+  }
+  .user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00E896 0%, #0D8F5A 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--nest-navy);
+    font-family: var(--font-display);
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 500; }
+  .user-tier {
+    font-size: 10px;
+    color: var(--nest-green);
+    font-family: var(--font-mono);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--nest-navy2);
+    border-bottom: 1px solid var(--nest-border2);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .topbar-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-md);
+    padding: 8px 14px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.15s;
+  }
+  .topbar-btn:hover { background: rgba(255,255,255,0.09); color: var(--text-1); }
+  .topbar-btn.primary {
+    background: var(--nest-green);
+    color: var(--nest-navy);
+    border-color: var(--nest-green);
+    font-weight: 600;
+  }
+  .topbar-btn.primary:hover { background: var(--nest-green-dim); }
+  .notif-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--nest-green);
+    margin-left: -4px;
+    margin-top: -10px;
+    box-shadow: 0 0 0 2px var(--nest-navy2);
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 32px;
+    flex: 1;
+  }
+
+  /* ── PANELS ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── GRID UTILS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--nest-card);
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-xl);
+    padding: 22px 24px;
+  }
+  .card-sm { padding: 16px 18px; }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .card-more {
+    font-size: 12px;
+    color: var(--nest-green);
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  /* ── METRIC CARDS ── */
+  .metric-val {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .metric-val.green { color: var(--nest-green); }
+  .metric-val.gold { color: var(--accent-gold); }
+  .metric-val.blue { color: var(--accent-blue); }
+  .metric-label { font-size: 12px; color: var(--text-2); margin-bottom: 12px; }
+  .metric-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+  .delta-up { color: var(--nest-green); }
+  .delta-down { color: var(--accent-red); }
+
+  /* ── PROGRESS BARS ── */
+  .prog-wrap { margin-top: 12px; }
+  .prog-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .prog-label { font-size: 12px; color: var(--text-2); width: 130px; flex-shrink: 0; }
+  .prog-track {
+    flex: 1;
+    height: 5px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .prog-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--nest-green);
+    transition: width 1s ease;
+  }
+  .prog-fill.gold { background: var(--accent-gold); }
+  .prog-fill.blue { background: var(--accent-blue); }
+  .prog-fill.red { background: var(--accent-red); }
+  .prog-val { font-size: 11px; font-family: var(--font-mono); color: var(--text-2); width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* ── TRANSFERS TABLE ── */
+  .tx-table { width: 100%; border-collapse: collapse; }
+  .tx-table th {
+    font-size: 11px;
+    color: var(--text-3);
+    font-weight: 500;
+    text-align: left;
+    padding: 0 12px 12px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .tx-row {
+    border-top: 1px solid var(--nest-border2);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .tx-row:hover { background: rgba(255,255,255,0.025); }
+  .tx-row td { padding: 13px 12px; font-size: 13px; }
+  .tx-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    font-family: var(--font-display);
+    flex-shrink: 0;
+  }
+  .tx-name { font-weight: 500; font-size: 13px; }
+  .tx-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .tx-amount { font-family: var(--font-mono); font-weight: 500; }
+  .tx-amount.pos { color: var(--nest-green); }
+  .tx-amount.neg { color: var(--text-1); }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+  }
+  .status-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .s-completed { background: rgba(0,232,150,0.12); color: var(--nest-green); }
+  .s-completed .status-dot { background: var(--nest-green); }
+  .s-pending { background: rgba(245,166,35,0.12); color: var(--accent-gold); }
+  .s-pending .status-dot { background: var(--accent-gold); }
+  .s-processing { background: rgba(61,169,252,0.12); color: var(--accent-blue); }
+  .s-processing .status-dot { background: var(--accent-blue); }
+  .s-refunded { background: rgba(255,77,106,0.12); color: var(--accent-red); }
+  .s-refunded .status-dot { background: var(--accent-red); }
+
+  /* ── SEND FLOW ── */
+  .send-wrap { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+  .send-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 7px; }
+  .form-label { font-size: 12px; color: var(--text-2); font-weight: 500; letter-spacing: 0.3px; }
+  .form-input {
+    background: var(--nest-navy3);
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-md);
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text-1);
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .form-input:focus { border-color: var(--nest-green); }
+  .form-input::placeholder { color: var(--text-3); }
+  .amount-wrap { position: relative; }
+  .amount-prefix {
+    position: absolute;
+    left: 16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-2);
+    font-family: var(--font-display);
+    pointer-events: none;
+  }
+  .amount-input {
+    padding-left: 36px;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: var(--font-display);
+  }
+  .corridor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .corridor-pill {
+    background: var(--nest-navy3);
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-md);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .corridor-pill:hover, .corridor-pill.sel {
+    border-color: var(--nest-green);
+    background: rgba(0,232,150,0.08);
+  }
+  .corridor-flag { font-size: 20px; }
+  .corridor-name { font-size: 12px; font-weight: 500; }
+  .corridor-op { font-size: 10px; color: var(--text-3); }
+  .corridor-free {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--nest-green);
+    background: rgba(0,232,150,0.1);
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-family: var(--font-mono);
+  }
+
+  /* ── FX WIDGET ── */
+  .fx-card {
+    background: linear-gradient(160deg, #162840 0%, #0D1B2A 100%);
+    border: 1px solid var(--nest-border);
+    border-radius: var(--r-xl);
+    padding: 24px;
+  }
+  .fx-rate-big {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--nest-green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .fx-sub { font-size: 12px; color: var(--text-2); margin-bottom: 20px; }
+  .fx-comparison { display: flex; flex-direction: column; gap: 8px; }
+  .fx-comp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: var(--r-md);
+    font-size: 12.5px;
+  }
+  .fx-comp-name { color: var(--text-2); }
+  .fx-comp-rate { font-family: var(--font-mono); font-weight: 500; }
+  .fx-comp-save {
+    font-size: 11px;
+    color: var(--nest-green);
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+  .fx-lock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .lock-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .lock-fill {
+    height: 100%;
+    background: var(--nest-green);
+    border-radius: 2px;
+    animation: lockcount 30s linear infinite;
+  }
+  @keyframes lockcount { from { width: 100%; } to { width: 0%; } }
+  .cta-send {
+    width: 100%;
+    background: var(--nest-green);
+    color: var(--nest-navy);
+    border: none;
+    border-radius: var(--r-md);
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font-display);
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.15s;
+    margin-top: 8px;
+  }
+  .cta-send:hover { background: var(--nest-green-dim); transform: translateY(-1px); }
+  .fee-zero {
+    text-align: center;
+    font-size: 12px;
+    color: var(--nest-green);
+    font-weight: 600;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+  }
+  .cancel-notice {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 6px;
+  }
+
+  /* ── LIVE TRACKING ── */
+  .track-timeline { display: flex; flex-direction: column; gap: 0; }
+  .track-step {
+    display: flex;
+    gap: 14px;
+    padding-bottom: 20px;
+    position: relative;
+  }
+  .track-step:last-child { padding-bottom: 0; }
+  .track-dot-col { display: flex; flex-direction: column; align-items: center; }
+  .track-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .track-dot.done {
+    background: rgba(0,232,150,0.15);
+    border: 1.5px solid var(--nest-green);
+    color: var(--nest-green);
+  }
+  .track-dot.active {
+    background: rgba(61,169,252,0.15);
+    border: 1.5px solid var(--accent-blue);
+    color: var(--accent-blue);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  .track-dot.wait {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid var(--text-3);
+    color: var(--text-3);
+  }
+  @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(61,169,252,0.4); } 50% { box-shadow: 0 0 0 6px rgba(61,169,252,0); } }
+  .track-line {
+    width: 1.5px;
+    flex: 1;
+    min-height: 16px;
+    background: var(--nest-border2);
+    margin-top: 4px;
+  }
+  .track-line.done { background: var(--nest-green); opacity: 0.4; }
+  .track-content { padding-top: 4px; }
+  .track-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .track-sub { font-size: 11px; color: var(--text-3); }
+  .track-time { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); margin-left: auto; padding-top: 4px; }
+
+  /* ── CORRIDORS PANEL ── */
+  .operator-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .op-card {
+    background: var(--nest-card2);
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-lg);
+    padding: 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .op-card:hover { border-color: var(--nest-green); transform: translateY(-2px); }
+  .op-flag { font-size: 28px; margin-bottom: 8px; }
+  .op-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .op-country { font-size: 11px; color: var(--text-3); margin-bottom: 10px; }
+  .op-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .op-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .op-tag.green { background: rgba(0,232,150,0.1); color: var(--nest-green); }
+  .op-tag.blue { background: rgba(61,169,252,0.1); color: var(--accent-blue); }
+  .op-tag.gold { background: rgba(245,166,35,0.1); color: var(--accent-gold); }
+  .op-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-top: 10px; }
+  .op-online { width: 6px; height: 6px; border-radius: 50%; background: var(--nest-green); animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* ── COMPLIANCE PANEL ── */
+  .kyc-tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+  .kyc-tier {
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-lg);
+    padding: 18px;
+    position: relative;
+  }
+  .kyc-tier.active-tier { border-color: var(--nest-green); background: rgba(0,232,150,0.04); }
+  .kyc-tier-badge {
+    position: absolute;
+    top: -1px; right: 14px;
+    font-size: 10px;
+    background: var(--nest-green);
+    color: var(--nest-navy);
+    padding: 2px 8px;
+    border-radius: 0 0 6px 6px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+  .kyc-tier-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .kyc-tier-limit { font-size: 20px; font-weight: 700; color: var(--nest-green); font-family: var(--font-display); margin-bottom: 6px; }
+  .kyc-tier-sub { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+  .kyc-reqs { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .kyc-req { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-2); }
+  .kyc-check { font-size: 12px; color: var(--nest-green); }
+  .kyc-check.pending { color: var(--text-3); }
+  .aml-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: var(--r-md);
+    background: var(--nest-card2);
+    border: 1px solid var(--nest-border2);
+    margin-bottom: 8px;
+  }
+  .aml-icon { font-size: 18px; }
+  .aml-label { font-size: 13px; font-weight: 500; }
+  .aml-sub { font-size: 11px; color: var(--text-3); }
+  .aml-status { margin-left: auto; }
+
+  /* ── REFERRAL PANEL ── */
+  .ref-hero {
+    background: linear-gradient(130deg, rgba(0,232,150,0.12) 0%, rgba(0,100,60,0.05) 100%);
+    border: 1px solid var(--nest-border);
+    border-radius: var(--r-xl);
+    padding: 28px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .ref-code-box {
+    background: var(--nest-navy);
+    border: 1.5px dashed var(--nest-green);
+    border-radius: var(--r-lg);
+    padding: 14px 24px;
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--nest-green);
+    letter-spacing: 3px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: all;
+  }
+  .ref-code-box:hover { background: rgba(0,232,150,0.06); }
+  .ref-copied {
+    font-size: 11px;
+    color: var(--nest-green);
+    text-align: center;
+    margin-top: 4px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .ref-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ref-stat {
+    background: var(--nest-card2);
+    border: 1px solid var(--nest-border2);
+    border-radius: var(--r-lg);
+    padding: 16px;
+    text-align: center;
+  }
+  .ref-stat-val { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--nest-green); }
+  .ref-stat-label { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+  .ref-friends { margin-top: 20px; }
+  .ref-friend-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--nest-border2);
+  }
+  .ref-friend-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    font-family: var(--font-display);
+  }
+  .ref-reward {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--nest-green);
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title span { font-size: 13px; color: var(--text-3); font-weight: 400; font-family: var(--font-body); }
+
+  /* ── GHOST BADGE ── */
+  .ghost-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,232,150,0.08);
+    border: 1px solid var(--nest-border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 11.5px;
+    color: var(--nest-green);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    margin-bottom: 24px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .panel.active { animation: fadeSlide 0.3s ease; }
+
+  /* ── SAVINGS CHIP ── */
+  .savings-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0,232,150,0.1);
+    border: 1px solid var(--nest-border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--nest-green);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    margin-bottom: 12px;
+  }
+
+  /* ── CANCEL TIMER ── */
+  .cancel-bar-wrap {
+    background: rgba(255,77,106,0.08);
+    border: 1px solid rgba(255,77,106,0.2);
+    border-radius: var(--r-md);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12.5px;
+    margin-top: 12px;
+  }
+  .cancel-bar-track { flex: 1; height: 4px; background: rgba(255,77,106,0.15); border-radius: 2px; overflow: hidden; }
+  .cancel-bar-fill { height: 100%; background: var(--accent-red); border-radius: 2px; animation: cancelcount 1800s linear forwards; width: 100%; }
+  @keyframes cancelcount { to { width: 0%; } }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo">Nesto<span>pay</span> <span class="logo-tag">GHOST</span></div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <div class="nav-item active" onclick="showPanel('dashboard', this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.7"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="showPanel('send', this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M10 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Send Money
+    </div>
+    <div class="nav-item" onclick="showPanel('track', this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Live Tracking
+      <span class="nav-badge">1</span>
+    </div>
+    <div class="nav-item" onclick="showPanel('corridors', this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M2 8h12M8 2c-1.5 2-2 4-2 6s.5 4 2 6M8 2c1.5 2 2 4 2 6s-.5 4-2 6" stroke="currentColor" stroke-width="1.2"/></svg>
+      Corridors
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Trust & Safety</div>
+    <div class="nav-item" onclick="showPanel('compliance', this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6.5 3.5-1 6-3.5 6-6.5V4L8 1.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.5 8l2 2 3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Compliance & KYC
+    </div>
+    <div class="nav-item" onclick="showPanel('referral', this)">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 13c0-2.5 2-4 4.5-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M11 8v5M8.5 10.5l2.5-2.5 2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Referrals
+      <span class="nav-badge">€30</span>
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-avatar">RW</div>
+      <div>
+        <div class="user-name">Roland W.</div>
+        <div class="user-tier">VERIFIED · T2</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Overview</div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="showPanel('track', document.querySelector('[onclick*=track]'))">🔔 1 active transfer</button>
+      <button class="topbar-btn primary" onclick="showPanel('send', document.querySelectorAll('.nav-item')[1])">+ Send money</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="panel-dashboard" class="panel active">
+      <div class="ghost-banner">⚡ Ghost Edition — rebuilt to beat Tap Tap Send</div>
+      <div class="section-title">Your wallet <span>May 2026</span></div>
+
+      <div class="grid-4" style="margin-bottom:20px;">
+        <div class="card card-sm">
+          <div class="metric-label">Available balance</div>
+          <div class="metric-val green">€2,845.60</div>
+          <div class="metric-delta delta-up">▲ 12.4% this month</div>
+        </div>
+        <div class="card card-sm">
+          <div class="metric-label">Total sent (2026)</div>
+          <div class="metric-val">€18,420</div>
+          <div class="metric-delta delta-up">▲ 8 transfers</div>
+        </div>
+        <div class="card card-sm">
+          <div class="metric-label">Fees saved vs banks</div>
+          <div class="metric-val gold">€1,104</div>
+          <div class="metric-delta delta-up">vs 6.2% avg fee</div>
+        </div>
+        <div class="card card-sm">
+          <div class="metric-label">Referral credits</div>
+          <div class="metric-val blue">€30.00</div>
+          <div class="metric-delta delta-up">3 friends joined</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px;">
+        <!-- Recent transfers -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent transfers</div>
+            <div class="card-more" onclick="showPanel('track', document.querySelectorAll('.nav-item')[2])">See all →</div>
+          </div>
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>Recipient</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tx-row">
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="tx-avatar" style="background:rgba(0,232,150,0.15);color:var(--nest-green);">AD</div>
+                    <div><div class="tx-name">Awa Diallo</div><div class="tx-sub">🇸🇳 SN · Orange Money</div></div>
+                  </div>
+                </td>
+                <td><div class="tx-amount neg">€250</div><div class="tx-sub">CFA 164,600</div></td>
+                <td><span class="status-pill s-completed"><span class="status-dot"></span>Delivered</span></td>
+                <td style="color:var(--text-3);font-size:11px;font-family:var(--font-mono);">34s</td>
+              </tr>
+              <tr class="tx-row">
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="tx-avatar" style="background:rgba(61,169,252,0.15);color:var(--accent-blue);">KM</div>
+                    <div><div class="tx-name">Kofi Mensah</div><div class="tx-sub">🇬🇭 GH · MTN MoMo</div></div>
+                  </div>
+                </td>
+                <td><div class="tx-amount neg">€180</div><div class="tx-sub">GHS 2,736</div></td>
+                <td><span class="status-pill s-processing"><span class="status-dot"></span>Processing</span></td>
+                <td style="color:var(--text-3);font-size:11px;font-family:var(--font-mono);">12s ago</td>
+              </tr>
+              <tr class="tx-row">
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="tx-avatar" style="background:rgba(245,166,35,0.15);color:var(--accent-gold);">AB</div>
+                    <div><div class="tx-name">Amara Bah</div><div class="tx-sub">🇬🇳 GN · Wave</div></div>
+                  </div>
+                </td>
+                <td><div class="tx-amount neg">€85</div><div class="tx-sub">GNF 732,000</div></td>
+                <td><span class="status-pill s-completed"><span class="status-dot"></span>Delivered</span></td>
+                <td style="color:var(--text-3);font-size:11px;font-family:var(--font-mono);">2m 18s</td>
+              </tr>
+              <tr class="tx-row">
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="tx-avatar" style="background:rgba(255,77,106,0.15);color:var(--accent-red);">FT</div>
+                    <div><div class="tx-name">Fatou Touré</div><div class="tx-sub">🇨🇮 CI · Orange CI</div></div>
+                  </div>
+                </td>
+                <td><div class="tx-amount neg">€120</div><div class="tx-sub">CFA 78,720</div></td>
+                <td><span class="status-pill s-refunded"><span class="status-dot"></span>Cancelled</span></td>
+                <td style="color:var(--text-3);font-size:11px;font-family:var(--font-mono);">1h ago</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Savings vs competitors -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Rate advantage</div>
+            <div style="font-size:11px;color:var(--text-3);font-family:var(--font-mono);">€200 → CFA live</div>
+          </div>
+          <div class="savings-chip">🏆 You save CFA 9,250 vs Western Union</div>
+          <div class="prog-wrap">
+            <div class="prog-row">
+              <div class="prog-label" style="color:var(--nest-green);font-weight:600;">Nestopay</div>
+              <div class="prog-track"><div class="prog-fill" style="width:100%;"></div></div>
+              <div class="prog-val" style="color:var(--nest-green);">131K</div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-label">Tap Tap Send</div>
+              <div class="prog-track"><div class="prog-fill blue" style="width:94%;"></div></div>
+              <div class="prog-val">123K</div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-label">Wise</div>
+              <div class="prog-track"><div class="prog-fill gold" style="width:90%;"></div></div>
+              <div class="prog-val">118K</div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-label">Remitly</div>
+              <div class="prog-track"><div class="prog-fill" style="width:82%;background:var(--text-3);"></div></div>
+              <div class="prog-val">107K</div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-label">Western Union</div>
+              <div class="prog-track"><div class="prog-fill red" style="width:71%;"></div></div>
+              <div class="prog-val">93K</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:12px;">CFA received per €200 sent · Updated every 30s</div>
+        </div>
+      </div>
+
+      <!-- Feature advantage badges -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Ghost Edition improvements vs Tap Tap Send</div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div style="background:var(--nest-card2);border-radius:var(--r-md);padding:14px;border:1px solid var(--nest-border2);">
+            <div style="font-size:18px;margin-bottom:6px;">🆓</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Zero fees on 5 corridors</div>
+            <div style="font-size:11px;color:var(--text-3);">SN, CI, GH, GN, ML — free, always</div>
+          </div>
+          <div style="background:var(--nest-card2);border-radius:var(--r-md);padding:14px;border:1px solid var(--nest-border2);">
+            <div style="font-size:18px;margin-bottom:6px;">⚡</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:3px;">60-second settlement</div>
+            <div style="font-size:11px;color:var(--text-3);">95% of transfers in under 60s</div>
+          </div>
+          <div style="background:var(--nest-card2);border-radius:var(--r-md);padding:14px;border:1px solid var(--nest-border2);">
+            <div style="font-size:18px;margin-bottom:6px;">🌐</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Web + WhatsApp + App</div>
+            <div style="font-size:11px;color:var(--text-3);">TTS is app-only. We're everywhere.</div>
+          </div>
+          <div style="background:var(--nest-card2);border-radius:var(--r-md);padding:14px;border:1px solid var(--nest-border2);">
+            <div style="font-size:18px;margin-bottom:6px;">↩️</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:3px;">30-min cancellation</div>
+            <div style="font-size:11px;color:var(--text-3);">Cancel any transfer, fee-free</div>
+          </div>
+          <div style="background:var(--nest-card2);border-radius:var(--r-md);padding:14px;border:1px solid var(--nest-border2);">
+            <div style="font-size:18px;margin-bottom:6px;">💬</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:3px;">Live support &lt;4hr SLA</div>
+            <div style="font-size:11px;color:var(--text-3);">TTS reviews: "no support at all"</div>
+          </div>
+          <div style="background:var(--nest-card2);border-radius:var(--r-md);padding:14px;border:1px solid var(--nest-border2);">
+            <div style="font-size:18px;margin-bottom:6px;">🏗️</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:3px;">B2B API — new revenue</div>
+            <div style="font-size:11px;color:var(--text-3);">Banks & telcos as clients</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEND ── -->
+    <div id="panel-send" class="panel">
+      <div class="section-title">Send money <span>Zero fees on flagship corridors</span></div>
+
+      <div class="send-wrap">
+        <div class="send-form">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Choose corridor</div></div>
+            <div class="corridor-grid" id="corridor-grid">
+              <div class="corridor-pill sel" onclick="selectCorridor(this,'SN','Senegal','Orange Money','655.2')">
+                <div class="corridor-flag">🇸🇳</div>
+                <div><div class="corridor-name">Senegal</div><div class="corridor-op">Orange Money</div></div>
+                <div class="corridor-free">FREE</div>
+              </div>
+              <div class="corridor-pill" onclick="selectCorridor(this,'CI','Côte d\'Ivoire','Orange CI','655.2')">
+                <div class="corridor-flag">🇨🇮</div>
+                <div><div class="corridor-name">Côte d'Ivoire</div><div class="corridor-op">Orange CI</div></div>
+                <div class="corridor-free">FREE</div>
+              </div>
+              <div class="corridor-pill" onclick="selectCorridor(this,'GH','Ghana','MTN MoMo','15.24')">
+                <div class="corridor-flag">🇬🇭</div>
+                <div><div class="corridor-name">Ghana</div><div class="corridor-op">MTN MoMo</div></div>
+                <div class="corridor-free">FREE</div>
+              </div>
+              <div class="corridor-pill" onclick="selectCorridor(this,'GN','Guinea','Wave','10,840')">
+                <div class="corridor-flag">🇬🇳</div>
+                <div><div class="corridor-name">Guinea</div><div class="corridor-op">Wave</div></div>
+                <div class="corridor-free">FREE</div>
+              </div>
+              <div class="corridor-pill" onclick="selectCorridor(this,'ML','Mali','Wave','655.2')">
+                <div class="corridor-flag">🇲🇱</div>
+                <div><div class="corridor-name">Mali</div><div class="corridor-op">Wave</div></div>
+                <div class="corridor-free">FREE</div>
+              </div>
+              <div class="corridor-pill" onclick="selectCorridor(this,'NG','Nigeria','First Bank','1,620')">
+                <div class="corridor-flag">🇳🇬</div>
+                <div><div class="corridor-name">Nigeria</div><div class="corridor-op">First Bank</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Transfer details</div>
+            <div class="send-form">
+              <div class="form-group">
+                <div class="form-label">Recipient phone number</div>
+                <input class="form-input" placeholder="+221 77 000 0000" type="tel">
+              </div>
+              <div class="form-group">
+                <div class="form-label">Amount to send (EUR)</div>
+                <div class="amount-wrap">
+                  <div class="amount-prefix">€</div>
+                  <input class="form-input amount-input" type="number" value="200" oninput="updateFX(this.value)" id="amount-input">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">They receive</div>
+                <input class="form-input" id="receive-display" value="CFA 131,040" readonly style="background:rgba(0,232,150,0.05);border-color:var(--nest-border);color:var(--nest-green);font-weight:600;font-family:var(--font-mono);">
+              </div>
+            </div>
+          </div>
+
+          <button class="cta-send" onclick="simulateSend()">Send €200 → FREE ⚡</button>
+          <div class="fee-zero">✓ Transfer fee: €0.00 · FX margin: 0.8% · No hidden charges</div>
+          <div class="cancel-notice">Cancel within 30 minutes for a full refund — no questions asked</div>
+        </div>
+
+        <!-- FX card -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="fx-card">
+            <div style="font-size:11px;color:var(--text-3);font-family:var(--font-mono);margin-bottom:6px;">LIVE RATE · EUR → XOF</div>
+            <div class="fx-rate-big" id="fx-rate-big">655.20</div>
+            <div class="fx-sub">CFA per euro · locked for 30s</div>
+            <div class="fx-lock">
+              <div class="lock-bar"><div class="lock-fill"></div></div>
+              <span>Rate expires in 30s</span>
+            </div>
+
+            <div style="margin:16px 0 8px;font-size:11px;color:var(--text-3);font-weight:500;letter-spacing:0.5px;">YOU SAVE VS COMPETITORS</div>
+            <div class="fx-comparison">
+              <div class="fx-comp-row">
+                <span class="fx-comp-name" style="color:var(--nest-green);font-weight:600;">Nestopay</span>
+                <span class="fx-comp-rate" id="cmp-nes">CFA 131,040</span>
+                <span class="fx-comp-save">Best rate</span>
+              </div>
+              <div class="fx-comp-row">
+                <span class="fx-comp-name">Tap Tap Send</span>
+                <span class="fx-comp-rate" id="cmp-tts">CFA 123,800</span>
+                <span class="fx-comp-save" style="color:var(--text-3);">−CFA 7,240</span>
+              </div>
+              <div class="fx-comp-row">
+                <span class="fx-comp-name">Western Union</span>
+                <span class="fx-comp-rate" id="cmp-wu">CFA 121,750</span>
+                <span class="fx-comp-save" style="color:var(--accent-red);">−CFA 9,290</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-sm">
+            <div class="card-title" style="margin-bottom:12px;">Transfer breakdown</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-2);">You send</span><span id="bd-send">€200.00</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-2);">Transfer fee</span><span style="color:var(--nest-green);font-weight:600;">€0.00 FREE</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-2);">FX rate</span><span style="font-family:var(--font-mono);">655.20</span></div>
+              <div style="border-top:1px solid var(--nest-border2);padding-top:8px;display:flex;justify-content:space-between;font-weight:600;"><span>They receive</span><span style="color:var(--nest-green);font-family:var(--font-mono);" id="bd-receive">CFA 131,040</span></div>
+            </div>
+          </div>
+
+          <div id="cancel-timer" style="display:none;" class="cancel-bar-wrap">
+            <div style="flex-shrink:0;">↩️ 30 min cancel window</div>
+            <div class="cancel-bar-track"><div class="cancel-bar-fill" id="cbar"></div></div>
+            <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-red);" id="cancel-time">29:59</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LIVE TRACKING ── -->
+    <div id="panel-track" class="panel">
+      <div class="section-title">Live tracking <span>1 active · 3 completed today</span></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Active transfer</div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:2px;font-family:var(--font-mono);">TXN-2026-00847</div>
+            </div>
+            <div>
+              <div style="font-size:20px;font-weight:800;font-family:var(--font-display);color:var(--nest-green);">€180</div>
+              <div style="font-size:11px;color:var(--text-3);">→ Kofi Mensah · Ghana</div>
+            </div>
+          </div>
+          <div class="track-timeline">
+            <div class="track-step">
+              <div class="track-dot-col"><div class="track-dot done">✓</div><div class="track-line done"></div></div>
+              <div class="track-content" style="flex:1;"><div class="track-title">Transfer initiated</div><div class="track-sub">KYC verified · idempotency key set</div></div>
+              <div class="track-time">12:42:01</div>
+            </div>
+            <div class="track-step">
+              <div class="track-dot-col"><div class="track-dot done">✓</div><div class="track-line done"></div></div>
+              <div class="track-content" style="flex:1;"><div class="track-title">AML screening passed</div><div class="track-sub">OFAC · EU · UN lists cleared</div></div>
+              <div class="track-time">12:42:02</div>
+            </div>
+            <div class="track-step">
+              <div class="track-dot-col"><div class="track-dot done">✓</div><div class="track-line done"></div></div>
+              <div class="track-content" style="flex:1;"><div class="track-title">FX rate locked</div><div class="track-sub">GHS 15.24 per EUR · Quote ID QT-8849</div></div>
+              <div class="track-time">12:42:03</div>
+            </div>
+            <div class="track-step">
+              <div class="track-dot-col"><div class="track-dot active">⟳</div><div class="track-line"></div></div>
+              <div class="track-content" style="flex:1;"><div class="track-title" style="color:var(--accent-blue);">Dispatching to MTN MoMo</div><div class="track-sub">Operator connector processing…</div></div>
+              <div class="track-time">12:42:13</div>
+            </div>
+            <div class="track-step">
+              <div class="track-dot-col"><div class="track-dot wait">5</div></div>
+              <div class="track-content" style="flex:1;"><div class="track-title" style="color:var(--text-3);">Settlement confirmed</div><div class="track-sub" style="color:var(--text-3);">Awaiting operator webhook</div></div>
+              <div class="track-time" style="color:var(--text-3);">—</div>
+            </div>
+          </div>
+          <div class="cancel-bar-wrap" style="margin-top:16px;">
+            <div>↩️ Cancel window</div>
+            <div class="cancel-bar-track"><div class="cancel-bar-fill" style="animation-duration:1800s;"></div></div>
+            <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-red);">27:48</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="card card-sm">
+            <div class="card-title" style="margin-bottom:12px;">Completed today</div>
+            <table class="tx-table">
+              <tbody>
+                <tr class="tx-row">
+                  <td><div style="display:flex;align-items:center;gap:8px;"><div class="tx-avatar" style="background:rgba(0,232,150,0.15);color:var(--nest-green);">AD</div><div><div class="tx-name">Awa Diallo</div><div class="tx-sub">Orange Money · SN</div></div></div></td>
+                  <td><div class="tx-amount neg">€250</div></td>
+                  <td><span class="status-pill s-completed"><span class="status-dot"></span>34s</span></td>
+                </tr>
+                <tr class="tx-row">
+                  <td><div style="display:flex;align-items:center;gap:8px;"><div class="tx-avatar" style="background:rgba(245,166,35,0.15);color:var(--accent-gold);">AB</div><div><div class="tx-name">Amara Bah</div><div class="tx-sub">Wave · GN</div></div></div></td>
+                  <td><div class="tx-amount neg">€85</div></td>
+                  <td><span class="status-pill s-completed"><span class="status-dot"></span>2m 18s</span></td>
+                </tr>
+                <tr class="tx-row">
+                  <td><div style="display:flex;align-items:center;gap:8px;"><div class="tx-avatar" style="background:rgba(255,77,106,0.15);color:var(--accent-red);">FT</div><div><div class="tx-name">Fatou Touré</div><div class="tx-sub">Orange CI · CI</div></div></div></td>
+                  <td><div class="tx-amount neg">€120</div></td>
+                  <td><span class="status-pill s-refunded"><span class="status-dot"></span>Cancelled</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card card-sm">
+            <div class="card-title" style="margin-bottom:12px;">Speed stats</div>
+            <div class="prog-wrap">
+              <div class="prog-row"><div class="prog-label">Under 60s</div><div class="prog-track"><div class="prog-fill" style="width:95%;"></div></div><div class="prog-val">95%</div></div>
+              <div class="prog-row"><div class="prog-label">Under 3 min</div><div class="prog-track"><div class="prog-fill blue" style="width:98%;"></div></div><div class="prog-val">98%</div></div>
+              <div class="prog-row"><div class="prog-label">Operator success</div><div class="prog-track"><div class="prog-fill gold" style="width:99%;"></div></div><div class="prog-val">99.2%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CORRIDORS ── -->
+    <div id="panel-corridors" class="panel">
+      <div class="section-title">Operator corridors <span>10 live · 200+ target</span></div>
+      <div class="operator-grid">
+        <div class="op-card">
+          <div class="op-flag">🇸🇳</div>
+          <div class="op-name">Orange Money SN</div>
+          <div class="op-country">Senegal · XOF</div>
+          <div class="op-tags"><span class="op-tag green">FREE</span><span class="op-tag blue">Wallet</span><span class="op-tag gold">Cash-out</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 34s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇬🇭</div>
+          <div class="op-name">MTN MoMo GH</div>
+          <div class="op-country">Ghana · GHS</div>
+          <div class="op-tags"><span class="op-tag green">FREE</span><span class="op-tag blue">Wallet</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 48s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇬🇳</div>
+          <div class="op-name">Wave GN</div>
+          <div class="op-country">Guinea · GNF</div>
+          <div class="op-tags"><span class="op-tag green">FREE</span><span class="op-tag blue">Wallet</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 52s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇨🇮</div>
+          <div class="op-name">Orange Money CI</div>
+          <div class="op-country">Côte d'Ivoire · XOF</div>
+          <div class="op-tags"><span class="op-tag green">FREE</span><span class="op-tag blue">Wallet</span><span class="op-tag gold">Cash-out</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 41s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇲🇱</div>
+          <div class="op-name">Wave ML</div>
+          <div class="op-country">Mali · XOF</div>
+          <div class="op-tags"><span class="op-tag green">FREE</span><span class="op-tag blue">Wallet</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 38s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇳🇬</div>
+          <div class="op-name">First Bank NG</div>
+          <div class="op-country">Nigeria · NGN</div>
+          <div class="op-tags"><span class="op-tag blue">Bank</span><span class="op-tag gold">1.2% fee</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 2m 10s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇸🇱</div>
+          <div class="op-name">Africell SL</div>
+          <div class="op-country">Sierra Leone · SLL</div>
+          <div class="op-tags"><span class="op-tag blue">Wallet</span><span class="op-tag gold">1.2% fee</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 55s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇬🇲</div>
+          <div class="op-name">Wave GM</div>
+          <div class="op-country">Gambia · GMD</div>
+          <div class="op-tags"><span class="op-tag blue">Wallet</span><span class="op-tag gold">1.2% fee</span></div>
+          <div class="op-status"><div class="op-online"></div>Live · avg 44s</div>
+        </div>
+        <div class="op-card">
+          <div class="op-flag">🇰🇪</div>
+          <div class="op-name">M-Pesa KE</div>
+          <div class="op-country">Kenya · KES</div>
+          <div class="op-tags"><span class="op-tag blue">Wallet</span><span class="op-tag gold">1.2% fee</span></div>
+          <div class="op-status"><div class="op-online" style="background:var(--accent-gold);"></div>Beta</div>
+        </div>
+        <div class="op-card" style="border-style:dashed;opacity:0.5;cursor:default;">
+          <div class="op-flag">➕</div>
+          <div class="op-name">New operator</div>
+          <div class="op-country">Add in 4–6 hours</div>
+          <div class="op-tags"><span class="op-tag blue">Pluggable API</span></div>
+          <div class="op-status" style="color:var(--text-3);">No core changes needed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COMPLIANCE ── -->
+    <div id="panel-compliance" class="panel">
+      <div class="section-title">KYC & Compliance <span>Ghost Edition tiered onboarding</span></div>
+
+      <div class="kyc-tier-grid">
+        <div class="kyc-tier">
+          <div class="kyc-tier-name">Tier 1 · Basic</div>
+          <div class="kyc-tier-limit">€200/mo</div>
+          <div class="kyc-tier-sub">Send your first transfer in 90 seconds. Phone OTP only.</div>
+          <div class="kyc-reqs">
+            <div class="kyc-req"><span class="kyc-check">✓</span> Phone number</div>
+            <div class="kyc-req"><span class="kyc-check">✓</span> OTP verified</div>
+            <div class="kyc-req"><span class="kyc-check pending">○</span> ID document</div>
+            <div class="kyc-req"><span class="kyc-check pending">○</span> Selfie / liveness</div>
+          </div>
+        </div>
+        <div class="kyc-tier active-tier">
+          <div class="kyc-tier-badge">YOUR TIER</div>
+          <div class="kyc-tier-name">Tier 2 · Verified</div>
+          <div class="kyc-tier-limit">€10K/mo</div>
+          <div class="kyc-tier-sub">Full Sumsub KYC. Verified in under 2 minutes. Unlocks all corridors.</div>
+          <div class="kyc-reqs">
+            <div class="kyc-req"><span class="kyc-check">✓</span> Phone number</div>
+            <div class="kyc-req"><span class="kyc-check">✓</span> ID document (OCR)</div>
+            <div class="kyc-req"><span class="kyc-check">✓</span> Selfie / liveness check</div>
+            <div class="kyc-req"><span class="kyc-check">✓</span> AML screening</div>
+          </div>
+        </div>
+        <div class="kyc-tier">
+          <div class="kyc-tier-name">Tier 3 · Business</div>
+          <div class="kyc-tier-limit">Unlimited</div>
+          <div class="kyc-tier-sub">Enhanced Due Diligence. B2B API access. Multi-user accounts.</div>
+          <div class="kyc-reqs">
+            <div class="kyc-req"><span class="kyc-check">✓</span> All T2 requirements</div>
+            <div class="kyc-req"><span class="kyc-check pending">○</span> Business registration</div>
+            <div class="kyc-req"><span class="kyc-check pending">○</span> UBO declaration</div>
+            <div class="kyc-req"><span class="kyc-check pending">○</span> Source of funds</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px;">AML & Sanctions screening</div>
+        <div class="aml-row">
+          <div class="aml-icon">🛡️</div>
+          <div><div class="aml-label">OFAC SDN list</div><div class="aml-sub">Office of Foreign Assets Control</div></div>
+          <div class="aml-status"><span class="status-pill s-completed"><span class="status-dot"></span>Active</span></div>
+        </div>
+        <div class="aml-row">
+          <div class="aml-icon">🇪🇺</div>
+          <div><div class="aml-label">EU Consolidated List</div><div class="aml-sub">European sanctions database</div></div>
+          <div class="aml-status"><span class="status-pill s-completed"><span class="status-dot"></span>Active</span></div>
+        </div>
+        <div class="aml-row">
+          <div class="aml-icon">🌐</div>
+          <div><div class="aml-label">UN Security Council</div><div class="aml-sub">via ComplyAdvantage</div></div>
+          <div class="aml-status"><span class="status-pill s-completed"><span class="status-dot"></span>Active</span></div>
+        </div>
+        <div class="aml-row">
+          <div class="aml-icon">📋</div>
+          <div><div class="aml-label">EU EMI Licence</div><div class="aml-sub">Application in progress · Q4 2026</div></div>
+          <div class="aml-status"><span class="status-pill s-pending"><span class="status-dot"></span>In progress</span></div>
+        </div>
+        <div class="aml-row">
+          <div class="aml-icon">🇬🇧</div>
+          <div><div class="aml-label">UK FCA Registration</div><div class="aml-sub">MLR 2017 · Filing Q4 2026</div></div>
+          <div class="aml-status"><span class="status-pill s-pending"><span class="status-dot"></span>In progress</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REFERRAL ── -->
+    <div id="panel-referral" class="panel">
+      <div class="section-title">Referral programme <span>Earn €10 per friend · they get first transfer free</span></div>
+
+      <div class="ref-hero">
+        <div style="flex:1;">
+          <div style="font-family:var(--font-display);font-size:20px;font-weight:800;margin-bottom:8px;">Share Nestopay. Both of you win.</div>
+          <div style="font-size:13px;color:var(--text-2);line-height:1.6;">Your friend gets their first transfer completely free. You earn €10 credit, automatically applied to your next send.</div>
+          <div style="margin-top:12px;font-size:12px;color:var(--text-3);">How it works: copy your code → friend signs up → friend sends first transfer → you both get rewarded.</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;">
+          <div class="ref-code-box" onclick="copyCode()" id="ref-code">NESTORW7</div>
+          <div class="ref-copied" id="ref-copied">✓ Copied to clipboard!</div>
+        </div>
+      </div>
+
+      <div class="ref-stat-grid" style="margin-bottom:24px;">
+        <div class="ref-stat">
+          <div class="ref-stat-val">3</div>
+          <div class="ref-stat-label">Friends joined</div>
+        </div>
+        <div class="ref-stat">
+          <div class="ref-stat-val" style="color:var(--accent-gold);">€30</div>
+          <div class="ref-stat-label">Credits earned</div>
+        </div>
+        <div class="ref-stat">
+          <div class="ref-stat-val" style="color:var(--accent-blue);">€10</div>
+          <div class="ref-stat-label">Next reward</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px;">Your referrals</div>
+        <div class="ref-friends">
+          <div class="ref-friend-row">
+            <div class="ref-friend-avatar" style="background:rgba(0,232,150,0.15);color:var(--nest-green);">MB</div>
+            <div><div style="font-size:13px;font-weight:500;">Mamadou Ba</div><div style="font-size:11px;color:var(--text-3);">Joined 3 Apr · Senegal corridor</div></div>
+            <div class="ref-reward">+€10 ✓</div>
+          </div>
+          <div class="ref-friend-row">
+            <div class="ref-friend-avatar" style="background:rgba(61,169,252,0.15);color:var(--accent-blue);">FC</div>
+            <div><div style="font-size:13px;font-weight:500;">Fatima Coulibaly</div><div style="font-size:11px;color:var(--text-3);">Joined 18 Apr · Côte d'Ivoire</div></div>
+            <div class="ref-reward">+€10 ✓</div>
+          </div>
+          <div class="ref-friend-row">
+            <div class="ref-friend-avatar" style="background:rgba(245,166,35,0.15);color:var(--accent-gold);">IS</div>
+            <div><div style="font-size:13px;font-weight:500;">Ibrahim Sawadogo</div><div style="font-size:11px;color:var(--text-3);">Joined 2 May · Mali corridor</div></div>
+            <div class="ref-reward">+€10 ✓</div>
+          </div>
+          <div class="ref-friend-row" style="border:none;opacity:0.45;">
+            <div class="ref-friend-avatar" style="background:rgba(255,255,255,0.05);color:var(--text-3);font-size:18px;">+</div>
+            <div><div style="font-size:13px;color:var(--text-3);">Invite your 4th friend</div><div style="font-size:11px;color:var(--text-3);">Earn another €10 credit</div></div>
+            <div class="ref-reward" style="color:var(--text-3);">€10 pending</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const titles = { dashboard:'Overview', send:'Send Money', track:'Live Tracking', corridors:'Corridors', compliance:'Compliance & KYC', referral:'Referrals' };
+
+function showPanel(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent = titles[id] || id;
+}
+
+function selectCorridor(el, code, name, op, rate) {
+  document.querySelectorAll('.corridor-pill').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  updateFX(document.getElementById('amount-input').value);
+}
+
+function updateFX(amt) {
+  amt = parseFloat(amt) || 0;
+  const rate = 655.2;
+  const rec = Math.round(amt * rate);
+  const formatted = rec.toLocaleString();
+  document.getElementById('receive-display').value = 'CFA ' + formatted;
+  document.getElementById('bd-send').textContent = '€' + amt.toFixed(2);
+  document.getElementById('bd-receive').textContent = 'CFA ' + formatted;
+  document.getElementById('fx-rate-big').textContent = rate.toFixed(2);
+  document.getElementById('cmp-nes').textContent = 'CFA ' + rec.toLocaleString();
+  document.getElementById('cmp-tts').textContent = 'CFA ' + Math.round(amt * 619).toLocaleString();
+  document.getElementById('cmp-wu').textContent = 'CFA ' + Math.round(amt * 608.75).toLocaleString();
+  const btn = document.querySelector('.cta-send');
+  const isFree = document.querySelector('.corridor-pill.sel .corridor-free');
+  btn.textContent = isFree ? 'Send €' + amt + ' → FREE ⚡' : 'Send €' + amt + ' → 1.2% fee';
+}
+
+function simulateSend() {
+  const btn = document.querySelector('.cta-send');
+  btn.textContent = '⚡ Dispatching…';
+  btn.style.background = 'var(--accent-blue)';
+  setTimeout(() => {
+    btn.textContent = '✓ Sent! Arriving in ~45s';
+    btn.style.background = 'var(--nest-green)';
+    document.getElementById('cancel-timer').style.display = 'flex';
+    startCancelTimer();
+    setTimeout(() => showPanel('track', document.querySelectorAll('.nav-item')[2]), 2000);
+  }, 1400);
+}
+
+function startCancelTimer() {
+  let secs = 1799;
+  const el = document.getElementById('cancel-time');
+  const iv = setInterval(() => {
+    if (secs <= 0) { clearInterval(iv); return; }
+    secs--;
+    const m = Math.floor(secs / 60), s = secs % 60;
+    if (el) el.textContent = m + ':' + String(s).padStart(2,'0');
+  }, 1000);
+}
+
+function copyCode() {
+  navigator.clipboard.writeText('NESTORW7').catch(() => {});
+  const el = document.getElementById('ref-copied');
+  el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; }, 2500);
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(r => console.log('[Nestopay] SW registered:', r.scope))
+      .catch(e => console.warn('[Nestopay] SW failed:', e));
+  });
+}
+</script>
+</body>
+</html>
